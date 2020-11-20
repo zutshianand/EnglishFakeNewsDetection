@@ -1,0 +1,72 @@
+```{r}
+library(quanteda)
+```
+
+```{r}
+library(readr)
+rough_train_dataset <- read_csv("data/rough_train_dataset.csv")
+```
+```{r}
+# Load Libraries
+library(quanteda)
+library(dplyr)
+library(rmarkdown)
+library(knitr)
+```
+```{r}
+# Hashtag analysis for the real tweets
+real_dataset <- subset(rough_train_dataset, label == "real")
+real_tweets <- corpus(real_dataset$tweet)
+real_tokens <- tokens(real_tweets, remove_punct = TRUE)
+real_dfm <- dfm(real_tokens, remove_punct = TRUE)
+
+tag_dfm <- dfm_select(real_dfm, pattern = ("#*"))
+toptag <- names(topfeatures(tag_dfm, 60))
+tag_fcm <- fcm(tag_dfm)
+
+topgat_fcm <- fcm_select(tag_fcm, pattern = toptag)
+textplot_network(topgat_fcm, min_freq = 0.1, edge_alpha = 0.8, edge_size = 5)
+```
+```{r}
+#Hashtag analysis for fake tweets
+fake_dataset <- subset(rough_train_dataset, label == "fake")
+fake_tweets <- corpus(fake_dataset$tweet)
+fake_tokens <- tokens(fake_tweets, remove_punct = TRUE)
+fake_dfm <- dfm(fake_tokens, remove_punct = TRUE)
+
+tag_dfm <- dfm_select(fake_dfm, pattern = ("#*"))
+toptag <- names(topfeatures(tag_dfm, 60))
+tag_fcm <- fcm(tag_dfm)
+
+topgat_fcm <- fcm_select(tag_fcm, pattern = toptag)
+textplot_network(topgat_fcm, min_freq = 0.1, edge_alpha = 0.8, edge_size = 5)
+```
+```{r}
+# Username analysis of real tweets
+real_dataset <- subset(rough_train_dataset, label == "real")
+real_tweets <- corpus(real_dataset$tweet)
+real_tokens <- tokens(real_tweets, remove_punct = TRUE)
+real_dfm <- dfm(real_tokens, remove_punct = TRUE)
+
+user_dfm <- dfm_select(real_dfm, pattern = "@*")
+topuser <- names(topfeatures(user_dfm, 50))
+user_fcm <- fcm(user_dfm)
+
+user_fcm <- fcm_select(user_fcm, pattern = topuser)
+textplot_network(user_fcm, min_freq = 0.1, edge_color = "orange", edge_alpha = 0.8, edge_size = 5)
+```
+```{r}
+# Username analysis of fake tweets
+fake_dataset <- subset(rough_train_dataset, label == "fake")
+fake_tweets <- corpus(fake_dataset$tweet)
+fake_tokens <- tokens(fake_tweets, remove_punct = TRUE)
+fake_dfm <- dfm(fake_tokens, remove_punct = TRUE)
+
+user_dfm <- dfm_select(fake_dfm, pattern = "@*")
+topuser <- names(topfeatures(user_dfm, 50))
+user_fcm <- fcm(user_dfm)
+
+user_fcm <- fcm_select(user_fcm, pattern = topuser)
+textplot_network(user_fcm, min_freq = 0.1, edge_color = "orange", edge_alpha = 0.8, edge_size = 5)
+```
+
