@@ -27,13 +27,16 @@ class RobertaForBinaryClassification(AlbertPreTrainedModel):
             model_inputs = {}
             for key, val in inputs.items():
                 model_inputs[key] = val.to(device)
+        else:
+          inputs = text_batch
 
+        inputs = inputs.to(device)
         attention = None
         if is_visualization:
             outputs = self.model(inputs)
+            attention = outputs[-1]
         else:
             outputs = self.model(**model_inputs)
-            attention = outputs[-1]
         
         output_1 = outputs[0][:, 0]
         output_2 = self.dropout(output_1)
