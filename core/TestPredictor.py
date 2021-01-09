@@ -13,6 +13,13 @@ from core.english.text_dataset import TextDataset
 class TestPredictor:
 
     def __init__(self, binary_model_path, rough_test_dataset_path, clean_test_dataset_path, output_text_file):
+        """
+        This class is used to predict the labels on the test dataset.
+        @param binary_model_path: File path for the trained saved model.
+        @param rough_test_dataset_path: File path for un-processed test dataset.
+        @param clean_test_dataset_path: File path for pre-processed test dataset.
+        @param output_text_file: File path to save the output file with generated labels.
+        """
         self.binary_model_path = binary_model_path
         self.rough_test_dataset_path = rough_test_dataset_path
         self.clean_test_dataset_path = clean_test_dataset_path
@@ -20,16 +27,25 @@ class TestPredictor:
         self.predictions = {}
 
     def predict_answers(self):
+        """
+        Cleans the test dataset, predict the labels using the trained model and saves the output file on disk.
+        """
         if self.rough_test_dataset_path:
             self.clean_test_dataset()
         self.predict_binary_classes()
         self.save_answer_file()
 
     def clean_test_dataset(self):
+        """
+        Cleans the test dataset.
+        """
         dataframe = pd.read_csv(self.rough_test_dataset_path, sep=',', converters={'tweet': preprocess})
         dataframe.to_csv(self.clean_test_dataset_path, sep=',', index=False)
 
     def predict_binary_classes(self):
+        """
+        Predicts the binary labels of the test dataset.
+        """
         test_dataset = TextDataset(dataset_file_path=self.clean_test_dataset_path, is_test=True)
         test_dl = DataLoader(test_dataset, batch_size=EVAL_BATCH_SIZE, shuffle=False)
 
@@ -68,6 +84,9 @@ class TestPredictor:
                     self.predictions[tweet_ids[i].item()] = "fake"
 
     def save_answer_file(self):
+        """
+        Saves the output file on disk.
+        """
         ids = []
         labels = []
         pred_dict = collections.OrderedDict(sorted(self.predictions.items()))

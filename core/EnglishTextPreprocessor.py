@@ -8,6 +8,11 @@ from utility.textReplaceUtils import replace_hashtags, replace_user_handles, rep
 
 
 def preprocess(text):
+    """
+    Utility function to preprocess the text.
+    @param text: Text sentence to be pre-processed.
+    @return: Pre-processed text.
+    """
     text = replace_hashtags(text)
     text = replace_user_handles(text)
     text = replace_urls(text)
@@ -24,6 +29,13 @@ def preprocess(text):
 class EnglishTextPreprocessor:
 
     def __init__(self, rough_train_file_path, rough_val_file_path, clean_train_file_path, clean_val_file_path):
+        """
+        Text Preprocessor class for english sentences.
+        @param rough_train_file_path: File path for un-processed training dataset.
+        @param rough_val_file_path: File path for un-processed validation dataset.
+        @param clean_train_file_path: File path for pre-processed training dataset.
+        @param clean_val_file_path: File path for pre-processed validation dataset.
+        """
         self.rough_train_file_path = rough_train_file_path
         self.rough_val_file_path = rough_val_file_path
         self.clean_train_file_path = clean_train_file_path
@@ -31,16 +43,29 @@ class EnglishTextPreprocessor:
         self.label_encoder = LabelEncoder()
 
     def clean_and_save_dataset(self):
+        """
+        Cleans and pre-processes the dataset and then saves it on disk.
+        """
         self.build_data_fields(self.rough_train_file_path)
         self.build_data_fields(self.rough_val_file_path, is_validation_data=True)
 
     def save_built_data(self, dataframe, is_validation_data=False):
+        """
+        Saves the cleaned dataset in a csv file on disk.
+        @param dataframe: Dataframe to be saved.
+        @param is_validation_data: Flag to check if the dataframe is training or validation.
+        """
         if is_validation_data:
             dataframe.to_csv(self.clean_val_file_path, index=False, sep=',')
         else:
             dataframe.to_csv(self.clean_train_file_path, index=False, sep=',')
 
     def build_data_fields(self, dataset_file_path, is_validation_data=False):
+        """
+        Reads the un-processed dataset, pre-processes it, converts the string labels to integers.
+        @param dataset_file_path: File path for un-processed dataset.
+        @param is_validation_data: Flag to check if the dataframe is training or validation.
+        """
         dataframe = pd.read_csv(dataset_file_path, sep=',', converters={'tweet': preprocess})
         dataframe['label'] = self.label_encoder.fit_transform(dataframe['label'].values)
         self.save_built_data(dataframe, is_validation_data)

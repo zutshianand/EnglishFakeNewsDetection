@@ -12,6 +12,10 @@ from core.english.text_dataset import TextDataset
 
 
 def get_data():
+    """
+    Loads the torch dataset into the dataloaders.
+    @return: Torch dataloaders for batch processing.
+    """
     train_dataset = TextDataset(dataset_file_path=CLEAN_TRAIN_DATASET_PATH)
     val_dataset = TextDataset(dataset_file_path=CLEAN_VAL_DATASET_PATH)
 
@@ -22,6 +26,9 @@ def get_data():
 
 
 def train():
+    """
+    This function is used to train the model from end to end.
+    """
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print("Running on the GPU")

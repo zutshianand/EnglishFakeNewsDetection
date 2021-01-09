@@ -1,3 +1,7 @@
+"""
+Manages all the constants used across the project.
+"""
+
 DATASET_FOLDER_PATH = '../../data/'
 ROUGH_TRAIN_DATASET_PATH = DATASET_FOLDER_PATH + 'rough_train_dataset.csv'
 ROUGH_VAL_DATASET_PATH = DATASET_FOLDER_PATH + 'rough_val_dataset.csv'
